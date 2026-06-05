@@ -27,6 +27,7 @@ Per utilizzare il pacchetto è sufficiente creare un environment python
 
 ```bash
 python -m venv venv
+.\venv\Scripts\activate
 pip install -r requirements.txt
 python agent.py
 ```
