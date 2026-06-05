@@ -1,7 +1,18 @@
 # AI Agent per copywriting di un blog finanziario
 
-Questo pacchetto Python utilizza LangGraph per gestire un agente nella stesura di articoli in ambito finanziario. Il pacchetto sfrutta il modello gratuito llama-3.3-70b-versatile tramite LangChain_Groq per generare vari elementi dell'output. 
+Questo pacchetto Python utilizza LangGraph per gestire un agente nella stesura di articoli in ambito finanziario. Il pacchetto sfrutta il modello gratuito llama-3.3-70b-versatile tramite LangChain_Groq per generare vari elementi dell'output. Una volta lanciato il codice viene richiesto un topic da tastiera che viene utilizzato per generare un articolo e il file JSON con la struttura
 
+```json
+{
+  "title": "...",
+  "meta_description": "...",
+  "keywords": ["...", "..."],
+  "content": "... (HTML o Markdown)",
+  "wp_ready": true/false
+}
+```
+
+che viene salvato nella cartella articoli con il nome topic_richiesto.json
 ## Struttura
 
 Il task dell'agente è stato fattorizzato in più nodi in modo da diminuire le probabilità di allucinazione dell'agente punto per punto. In particolare, il grafo è stato diviso nel seguente modo:
@@ -26,7 +37,7 @@ Tutte le API key utilizzate sono state salvate nel file .env
 Per utilizzare il pacchetto è sufficiente creare un environment python
 
 ```bash
-python -m venv venv
+python3.14 -m venv venv
 .\venv\Scripts\activate
 pip install -r requirements.txt
 python agent.py
@@ -36,4 +47,8 @@ Per testare la pubblicazione in formato bozza su installazione WordPress locale,
 ## Limitazioni
 
 Utilizzando Groq con API gratuita e SerpAPI sempre con tier gratuito l'agente ha un massimo di 250 richieste al giorno a SerpAPI e 100k token giornalieri con llama. Limiti non troppo stringenti in fase di test, ma che sicuramente non vanno bene in fase di produzione.
-Inoltre si è deciso di limitare lo spazio degli argomenti a quelli economico-finanziari per una questione di allucinazione del modello e per poter dare un ruolo definito all'agente. Questo introduce un'altra limitazione che consiste nell'assenza di un sistema di RAG all'interno del modello. Questa mancanza fa si che spesso l'agente produca alcuni risultati non accurati, che si è sempre cercato di evitare tramite prompt engineering. Inserendo un database da cui l'agente può andare a leggere facendo RAG questo effetto dovrebbe sparire.
+Inoltre si è deciso di limitare lo spazio degli argomenti a quelli economico-finanziari per una questione di allucinazione del modello e per poter dare un ruolo definito all'agente. Questo introduce un'altra limitazione che consiste nell'assenza di un sistema di RAG all'interno del modello. Questa mancanza fa si che spesso l'agente produca alcuni risultati non accurati, che si è sempre cercato di evitare tramite prompt engineering. Inserendo un database da cui l'agente può andare a leggere facendo RAG questo effetto dovrebbe sparire. 
+
+## Cartella Articoli
+
+Gli output JSON vengono salvati in una cartella articoli nella cartella di lavoro. Nella cartella inviata ci sono alcuni esempi di articoli generati. Quelli giudicati non validi perchè non pertinenti all'argomento (paolo_bitta.json) non vengono generati, si salva semplicemente il json con un messaggio di errore nel contenuto; quelli che non sono pronti per la pubblicazione - perchè non si è raggiunto il numero di parole, o non ci sono abbastanza sezioni - vengono salvati in json ma vengono flaggati come non pronti per la pubblicazione (wp_ready = False); quelli pronti per la pubblicazione invece vengono pubblicati come draft con la WordPress REST API.

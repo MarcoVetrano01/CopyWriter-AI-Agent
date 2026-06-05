@@ -40,7 +40,6 @@ def keyword_fetcher_node(state: AgentState) -> AgentState:
         keywords = []
         if 'related_searches' in data:
             keywords = [item['query'] for item in data['related_searches'][:3]]
-        print(keywords)
         print("Invoking LLM to generate other keywords to be integrated in the article")
 
         SYSTEM_PROMPT = """Sei un Senior SEO Strategist specializzato nel Settore Bancario e Finanziario. Il tuo compito è analizzare un topic proposto e stabilire se ha senso logico e utilità reale scriverci un articolo per un blog finanziario.\n
@@ -99,14 +98,20 @@ def outliner_node(state: AgentState) -> list:
     """
 
     SYSTEM_PROMPT = """Agisci come un Senior SEO Strategist specializzato nel settore Bancario e Finanziario.
-                    Ricevi in input un Argomento e una lista di Keyword. Il tuo compito è creare la scaletta dell'articolo (Outline) e fornire istruzioni precise al copywriter su come gestire le keyword.
+                    Ricevi in input un Argomento e una lista di Keyword. Il tuo compito è creare la scaletta dell'articolo (Outline) e fornire istruzioni precise al copywriter su cosa scrivere in ogni sezione basandoti su quelle keyword.
                     REGOLE PER I TITOLI (H2):
-                    Crea da 3 a 5 sezioni logiche che coprano l'argomento (es. funzionamento, requisiti, simulazione, differenze INPS/NoiPA).
+                    Crea da 3 a 5 sezioni logiche che coprano l'argomento (es. funzionamento, requisiti, simulazione).
                     I titoli H2 devono essere naturali e discorsivi. È VIETATO usare le keyword crude come titoli.
                     REGOLE PER LE DIRETTIVE AL COPYWRITER:
                     Per ogni H2 che crei, devi scrivere una o più direttive (chiave copywriter_directive). In questa direttiva devi
-                    dare delle istruzioni chiare e brevi su cosa scrivere nel paragrafo, riferendoti alle keyword assegnate a quella sezione, destrutturandone i concetti. TUTTE le keyword devono essere discusse nell'articolo in maniera naturale, 
+                    dare delle istruzioni chiare e brevi su cosa scrivere nel paragrafo, destruttura i concetti delle keyword (es. keyword: 'mutuo prima casa: simulazione' -> direttiva: 'spiega da cosa dipende il mutuo e come simularlo' OPPURE keyword: 'mutuo prima casa' -> direttiva: 'spiega come si ottiene il mutuo per la prima casa'). TUTTE le keyword devono essere discusse nell'articolo in maniera naturale, 
                     quindi genera le sezioni e le direttive, basandoti su di esse (es. keyword: 'Cessione del quinto: Simulazione' ->direttiva: 'Spiega come funziona la simulazione della cessione del quinto, quali dati servono e quali risultati aspettarsi.').
+                    Nelle direttive NON DEVE mancare nessun riferimento alle keyword fornite.
+                    Esempio:
+                    Topic: 'Mutuo prima casa'
+                    keywords: ['Mutuo prima casa under 36', 'Mutuo prima casa simulazione', 'Mutuo Prima casa Intesa san paolo', 'tasso di interesse', 'richiesta mutuo']
+                    outline: ["Avviare la pratica in banca: documenti e procedure", "Opzioni e agevolazioni bancarie per i giovani", "Calcolo della rata e scelta dell'istituto di credito"]
+                    copywriter_directive: ["Spiega i passaggi logici per avviare la pratica in banca. Parla della valutazione reddituale e dei documenti base (buste paga, documenti d'identità). Integra in modo naturale e discorsivo i concetti legati alla 'richiesta' del 'mutuo'. Non inventare leggi o tempistiche specifiche. Evita frasi introduttive scolastiche ed entra subito nel vivo del processo.", "Spiega in termini generali che le banche offrono spesso condizioni agevolate per i giovani. Integra in modo separato e fluido i termini 'mutuo', 'prima casa' e 'under 36', declinandoli nella sintassi. Spiega come l'età e la prima abitazione possano influire in modo positivo sul 'tasso di interesse' proposto. Non inventare percentuali, nomi di decreti o requisiti di legge fittizi. Varia i pronomi e non ripetere sempre lo stesso soggetto.", "Spiega perché è utile calcolare la rata prima di firmare. Integra i concetti di 'simulazione', 'mutuo' e 'prima casa' destrutturandoli nel testo (es. 'effettuare una simulazione della rata...'). Inoltre, DEVI nominare esplicitamente 'Intesa Sanpaolo' come esempio pratico di istituto bancario a cui rivolgersi per finanziare l'acquisto della 'prima casa'. Unisci queste parole in un italiano fluido, senza forzature. Vieta l'uso di elenchi puntati."]
                     FORMATO DI OUTPUT:
                     Rispondi ESCLUSIVAMENTE rispettando il formato richiesto dal JSON schema Outline, senza aggiungere testo introduttivo o conclusivo.
                     """
