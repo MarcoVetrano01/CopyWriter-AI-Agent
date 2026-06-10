@@ -10,9 +10,9 @@ description = "AI Agent for SEO article copywriting and publication on WordPress
 readme = "README.md"
 requires-python = "==3.14"
 dependencies = [ 
-    "pydantic==2.13.4"
-    "langgraph"
-    "langchain-groq==1.1.2"
-    "markdown==3.10.2"
+    "pydantic==2.13.4",
+    "langgraph",
+    "langchain-groq==1.1.2",
+    "markdown==3.10.2",
     "python-dotenv"
 ]
