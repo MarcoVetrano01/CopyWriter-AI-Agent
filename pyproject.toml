@@ -1,17 +1,18 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=80.9.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nome_pacchetto"
+name = "agent_ai_copywriter"
 version = "0.1.0"
-description = "Descrizione del tuo progetto"
+authors = [{ name="Marco Vetrano", email="marco.vetrano01@gmail.com" }]
+description = "AI Agent for SEO article copywriting and publication on WordPress"
 readme = "README.md"
-requires-python = ">=3.8"
-dependencies = [
-    pydantic
-    langgraph
-    langchain-groq
-    markdown
-    python-dotenv
+requires-python = "==3.14"
+dependencies = [ 
+    "pydantic==2.13.4"
+    "langgraph"
+    "langchain-groq==1.1.2"
+    "markdown==3.10.2"
+    "python-dotenv"
 ]
